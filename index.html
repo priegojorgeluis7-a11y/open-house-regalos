@@ -202,13 +202,27 @@
             <!-- Los regalos se generarán dinámicamente aquí -->
         </div>
 
-        <!-- Botón de acceso privado para los Novios -->
-        <div class="text-center mt-6">
-            <button onclick="toggleAdminMode()" id="btn-admin-mode" class="text-xs text-gray-400 hover:text-brand-600 transition inline-flex items-center gap-1.5 cursor-pointer bg-white/50 px-3.5 py-2 rounded-xl border border-gray-100/40 shadow-2xs hover:shadow-xs">
-                <i class="fa-solid fa-lock text-[10px]"></i>
-                <span>Ver quién apartó (Solo Novios)</span>
-            </button>
-        </div>
+        <!-- Panel de asistencia confirmada -->
+        <section class="bg-white rounded-2xl p-5 border border-brand-200/40 shadow-sm mt-6">
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Invitados</span>
+                    <h3 class="text-xl font-extrabold text-cozy-dark mt-0.5">Ver quién asistirá</h3>
+                    <p class="text-xs text-gray-500 mt-1">Se actualiza automáticamente con las confirmaciones.</p>
+                </div>
+                <span class="text-2xl">📝</span>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 font-semibold px-2.5 py-1 rounded-full border border-emerald-200">✅ Sí: <strong id="rsvp-count-si">0</strong></span>
+                <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 font-semibold px-2.5 py-1 rounded-full border border-amber-200">🤔 Tal vez: <strong id="rsvp-count-talvez">0</strong></span>
+                <span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-800 font-semibold px-2.5 py-1 rounded-full border border-rose-200">❌ No: <strong id="rsvp-count-no">0</strong></span>
+            </div>
+
+            <div id="rsvp-attendees-list" class="mt-4 space-y-2 max-h-56 overflow-auto custom-scrollbar">
+                <p class="text-xs text-gray-400">Aún no hay confirmaciones.</p>
+            </div>
+        </section>
 
         <!-- Confirmación de Asistencia -->
         <section class="bg-white rounded-2xl p-5 border border-brand-200/40 shadow-sm mt-6">
@@ -379,7 +393,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, updateDoc, collection, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, updateDoc, collection, onSnapshot, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // CONFIGURACIÓN DE FIREBASE (Usa las variables globales inyectadas de manera segura)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'open-house-gift-registry-2026';
@@ -435,7 +449,7 @@
         let selectedEmoji = '🍳';
         let currentClaimingId = null;
         let currentReleasingId = null;
-        let isAdmin = false;
+        let attendeeRecords = [];
 
         // Ayudante para obtener lista de aportadores de manera robusta
         function getClaimers(gift) {
@@ -454,10 +468,12 @@
                 
                 // Conectarse a Firestore después de autenticar exitosamente
                 await setupRealtimeListener();
+                await setupRsvpRealtimeListener();
             } catch (err) {
                 console.error("Error de autenticación Firebase:", err);
                 // Si falla Firebase, usamos localStorage de fallback para que siga siendo usable localmente
                 useLocalStorageFallback();
+                loadRsvpLocalFallback();
             }
         }
 
@@ -465,6 +481,123 @@
         const getCollectionRef = () => {
             return collection(db, 'artifacts', appId, 'public', 'data', 'gifts');
         };
+
+        const getRsvpCollectionRef = () => {
+            return collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
+        };
+
+        function makeRsvpDocId(name) {
+            return name
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 64) || `rsvp-${Date.now()}`;
+        }
+
+        async function setupRsvpRealtimeListener() {
+            const q = query(getRsvpCollectionRef(), orderBy('updatedAt', 'desc'));
+            onSnapshot(q, (snapshot) => {
+                attendeeRecords = [];
+                snapshot.forEach((entry) => attendeeRecords.push(entry.data()));
+                renderAttendees();
+            }, (error) => {
+                console.error('Error leyendo RSVPs:', error);
+                loadRsvpLocalFallback();
+            });
+        }
+
+        function loadRsvpLocalFallback() {
+            const localList = localStorage.getItem('openHouseRsvpList');
+            if (localList) {
+                try {
+                    attendeeRecords = JSON.parse(localList);
+                } catch (e) {
+                    console.error('No se pudo leer RSVP local:', e);
+                    attendeeRecords = [];
+                }
+            } else {
+                attendeeRecords = [];
+            }
+            renderAttendees();
+        }
+
+        function upsertLocalRsvp(rsvpData) {
+            const normalized = rsvpData.name.toLowerCase();
+            const next = attendeeRecords.filter(item => (item.name || '').toLowerCase() !== normalized);
+            next.unshift(rsvpData);
+            attendeeRecords = next.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            localStorage.setItem('openHouseRsvpList', JSON.stringify(attendeeRecords));
+            renderAttendees();
+        }
+
+        function migrateLegacyRsvpToList() {
+            const legacyRaw = localStorage.getItem('openHouseRsvp');
+            if (!legacyRaw) return;
+
+            try {
+                const legacy = JSON.parse(legacyRaw);
+                if (!legacy || !legacy.name) return;
+
+                const exists = attendeeRecords.some(item =>
+                    (item.name || '').toLowerCase() === legacy.name.toLowerCase()
+                );
+                if (!exists) {
+                    upsertLocalRsvp({
+                        name: legacy.name,
+                        status: legacy.status || 'si',
+                        note: legacy.note || '',
+                        updatedAt: legacy.updatedAt || Date.now()
+                    });
+                }
+            } catch (e) {
+                console.error('No se pudo migrar RSVP legado:', e);
+            }
+        }
+
+        function renderAttendees() {
+            const list = document.getElementById('rsvp-attendees-list');
+            const countSi = document.getElementById('rsvp-count-si');
+            const countTalvez = document.getElementById('rsvp-count-talvez');
+            const countNo = document.getElementById('rsvp-count-no');
+            if (!list || !countSi || !countTalvez || !countNo) return;
+
+            const byStatus = {
+                si: attendeeRecords.filter(a => a.status === 'si').length,
+                talvez: attendeeRecords.filter(a => a.status === 'talvez').length,
+                no: attendeeRecords.filter(a => a.status === 'no').length
+            };
+
+            countSi.innerText = byStatus.si;
+            countTalvez.innerText = byStatus.talvez;
+            countNo.innerText = byStatus.no;
+
+            if (attendeeRecords.length === 0) {
+                list.innerHTML = '<p class="text-xs text-gray-400">Aún no hay confirmaciones.</p>';
+                return;
+            }
+
+            const statusMeta = {
+                si: { label: 'Sí asiste', color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: '✅' },
+                talvez: { label: 'Tal vez', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: '🤔' },
+                no: { label: 'No asiste', color: 'bg-rose-50 text-rose-700 border-rose-200', icon: '❌' }
+            };
+
+            list.innerHTML = attendeeRecords.map((entry) => {
+                const meta = statusMeta[entry.status] || statusMeta.talvez;
+                const note = entry.note ? `<p class="text-xs text-gray-500 mt-1">${entry.note}</p>` : '';
+                return `
+                    <div class="p-3 rounded-xl border border-gray-100 bg-gray-50">
+                        <div class="flex items-center justify-between gap-2">
+                            <p class="text-sm font-bold text-cozy-dark truncate">${entry.name || 'Invitado'}</p>
+                            <span class="text-[11px] font-semibold px-2 py-1 rounded-full border ${meta.color}">${meta.icon} ${meta.label}</span>
+                        </div>
+                        ${note}
+                    </div>
+                `;
+            }).join('');
+        }
 
         // Escucha en tiempo real (onSnapshot con callback de error)
         async function setupRealtimeListener() {
@@ -592,16 +725,14 @@
                 let statusHtml = '';
                 if (isMulti) {
                     const contributions = claimers.length;
-                    const showNames = isAdmin && contributions > 0 ? ` (por: ${claimers.join(', ')})` : '';
                     if (contributions > 0) {
-                        statusHtml = `<p class="text-xs text-brand-600 font-bold mt-0.5">🙌 ¡Disponible! (${contributions} aportación${contributions > 1 ? 'es' : ''})${showNames}</p>`;
+                        statusHtml = `<p class="text-xs text-brand-600 font-bold mt-0.5">🙌 ¡Disponible! (${contributions} aportación${contributions > 1 ? 'es' : ''})</p>`;
                     } else {
                         statusHtml = '<p class="text-xs text-amber-500 font-bold mt-0.5">🙌 ¡Disponible para varios!</p>';
                     }
                 } else {
                     if (isClaimed) {
-                        const showName = isAdmin ? ` (por: ${gift.claimedBy})` : '';
-                        statusHtml = `<p class="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-0.5"><i class="fa-solid fa-circle-check text-[10px]"></i> ¡Ya reservado!${showName}</p>`;
+                        statusHtml = '<p class="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-0.5"><i class="fa-solid fa-circle-check text-[10px]"></i> ¡Ya reservado!</p>';
                     } else {
                         statusHtml = '<p class="text-xs text-amber-500 font-bold mt-0.5">🙌 ¡Disponible!</p>';
                     }
@@ -612,7 +743,7 @@
                 if (isMulti) {
                     // Para despensa en general, siempre mostramos "Anotarse".
                     // Si el usuario actual ya aportó o es admin, también habilitamos el botón para retirar su aportación.
-                    const canRelease = userHasContributed || isAdmin;
+                    const canRelease = userHasContributed;
                     actionHtml = `
                         <div class="flex items-center gap-1.5">
                             ${canRelease 
@@ -809,15 +940,7 @@
                 const myName = sessionStorage.getItem('userName') || "";
                 
                 let nameToRemove = myName;
-                if (isAdmin && !claimers.includes(myName)) {
-                    // Si el administrador desea retirar, le pregunta a quién
-                    const inputName = prompt("Ingresa el nombre de la persona que deseas retirar de la lista:\nNombres actuales: " + claimers.join(', '));
-                    if (inputName) {
-                        nameToRemove = inputName.trim();
-                    } else {
-                        return; // Cancelar
-                    }
-                } else if (!myName) {
+                if (!myName) {
                     const inputName = prompt("Ingresa el nombre con el que apartaste la despensa para liberarlo:");
                     if (inputName) {
                         nameToRemove = inputName.trim();
@@ -965,12 +1088,15 @@
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
+                    nameInput.value = parsed.name || '';
                     statusInput.value = parsed.status || 'si';
                     noteInput.value = parsed.note || '';
                 } catch (e) {
                     console.error('No se pudo cargar RSVP previo:', e);
                 }
             }
+
+            migrateLegacyRsvpToList();
 
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
@@ -991,35 +1117,24 @@
 
                 localStorage.setItem('openHouseRsvp', JSON.stringify(rsvpData));
                 updateRsvpSummary(rsvpData);
-                showToast('✅ Asistencia confirmada. ¡Gracias!', 'success');
+                const isFirebaseActive = auth.currentUser !== null;
+                if (isFirebaseActive) {
+                    const rsvpId = makeRsvpDocId(name);
+                    setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'rsvp', rsvpId), rsvpData)
+                        .then(() => {
+                            showToast('✅ Asistencia confirmada. ¡Gracias!', 'success');
+                        })
+                        .catch((e) => {
+                            console.error('Error guardando RSVP en Firebase:', e);
+                            upsertLocalRsvp(rsvpData);
+                            showToast('✅ Asistencia confirmada (guardado local)', 'success');
+                        });
+                } else {
+                    upsertLocalRsvp(rsvpData);
+                    showToast('✅ Asistencia confirmada. ¡Gracias!', 'success');
+                }
             });
         }
-
-        // Modo Novios / Admin para ver quién apartó cada regalo de forma privada
-        window.toggleAdminMode = function() {
-            if (isAdmin) {
-                isAdmin = false;
-                document.getElementById('btn-admin-mode').innerHTML = `
-                    <i class="fa-solid fa-lock text-[10px]"></i>
-                    <span>Ver quién apartó (Solo Novios)</span>
-                `;
-                showToast("🔒 Nombres ocultados de la vista pública", "info");
-                renderGifts();
-            } else {
-                const pin = prompt("Ingresa el PIN de acceso para los novios:");
-                if (pin === "2026") {
-                    isAdmin = true;
-                    document.getElementById('btn-admin-mode').innerHTML = `
-                        <i class="fa-solid fa-lock-open text-[10px] text-emerald-600"></i>
-                        <span class="text-emerald-700 font-bold">Ver quién apartó (Modo Novios)</span>
-                    `;
-                    showToast("🔓 Modo Novios activo. Ahora puedes ver quién reservó cada regalo.", "success");
-                    renderGifts();
-                } else if (pin !== null) {
-                    showToast("❌ Código PIN incorrecto", "error");
-                }
-            }
-        };
 
         // Compartir liga de la mesa
         window.shareRegistry = function() {
