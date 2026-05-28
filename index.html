@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesa de Regalos - Nuestro Open House 🏡</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf8f5',
+                            100: '#fbeee6',
+                            200: '#f7dcd0',
+                            500: '#e07a5f',
+                            600: '#c86247',
+                            700: '#a64e37',
+                        },
+                        cozy: {
+                            dark: '#3d405b',
+                            green: '#81b29a',
+                            yellow: '#f2cc8f'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdf8f5;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased text-gray-800">
+
+    <!-- Encabezado / Banner principal -->
+    <header class="relative overflow-hidden bg-gradient-to-b from-brand-100 to-brand-50 border-b border-brand-200/50 py-10 px-4">
+        <div class="absolute inset-0 opacity-40 bg-[radial-gradient(#e07a5f_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        
+        <div class="max-w-xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white shadow-md border border-brand-100 mb-4 animate-bounce">
+                <span class="text-3xl">🏡</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-cozy-dark tracking-tight">¡Mesa de Regalos!</h1>
+            <p class="text-brand-600 font-semibold text-lg mt-1">Nuestro Nuevo Hogar ✨</p>
+            
+            <p class="text-gray-600 text-sm sm:text-base mt-3 px-2 leading-relaxed">
+                ¡Hola! Nos hace muchísima ilusión recibirlos en nuestro open house. Como varios nos preguntaron qué nos hace falta, armamos esta pequeña lista interactiva. 
+            </p>
+            
+            <div class="mt-4 flex flex-wrap justify-center gap-2">
+                <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Sincronizado en tiempo real
+                </span>
+                <button onclick="shareRegistry()" class="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-gray-200 shadow-xs transition active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-share-nodes text-brand-500"></i>
+                    Compartir lista
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-xl w-full mx-auto px-4 py-6">
+
+        <!-- Galería de fotos del nuevo hogar -->
+        <section class="bg-white rounded-2xl p-4 border border-brand-200/40 shadow-sm mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Open House</span>
+                    <h2 class="text-lg font-extrabold text-cozy-dark">Carnita asada y billar</h2>
+                </div>
+                <span class="text-xl">📸</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <img src="./img/carnita-asada.jpg" alt="Carnita asada para el open house" class="w-full h-44 sm:h-48 object-cover rounded-xl border border-gray-100" onerror="this.onerror=null; this.src='https://placehold.co/900x600/fbeee6/e07a5f?text=Sube+img%2Fcarnita-asada.jpg+🥩🔥'">
+                <img src="./img/billar.jpg" alt="Mesa de billar en el área social" class="w-full h-44 sm:h-48 object-cover rounded-xl border border-gray-100" onerror="this.onerror=null; this.src='https://placehold.co/900x600/fbeee6/e07a5f?text=Sube+img%2Fbillar.jpg'">
+            </div>
+        </section>
+        
+        <!-- Tarjeta de Invitación Oficial & Ubicación -->
+        <div class="bg-white rounded-2xl overflow-hidden border border-brand-200/40 shadow-sm mb-6">
+            <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+                <img src="./img/llaves.jpg" alt="Llaves de nuestro nuevo hogar" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/600x400/fbeee6/e07a5f?text=¡Estrenando+Hogar!+🔑'">
+                <div class="absolute top-3 left-3 bg-brand-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
+                    <span>🔑</span> ¡Ya tenemos las llaves!
+                </div>
+            </div>
+            <div class="p-5 space-y-4">
+                <div class="flex items-start justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">¡Se armó el festejo!</span>
+                        <h2 class="text-xl font-extrabold text-cozy-dark mt-0.5">Inauguración Oficial 🏡✨</h2>
+                    </div>
+                    <span class="bg-cozy-yellow/20 text-amber-800 text-xs font-extrabold px-2.5 py-1 rounded-lg">Este Sábado 📅</span>
+                </div>
+                
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    ¡Buenas buenas! 🤠🔥 Este sábado se arma el open house oficial. Habrá carnita asada, chelas bien frías y retas de billar. 🥩🍺🎱 
+                    <br><br>
+                    ¡Están todos más que invitados! Caiganle a partir de las <strong>4:00 PM</strong> para estrenar la casa como se debe. ¡Allá los veo!
+                </p>
+                
+                <div class="pt-3 border-t border-gray-100">
+                    <a href="https://maps.app.goo.gl/2Wj45J3u1LDjG4Th6" target="_blank" class="w-full inline-flex items-center justify-center gap-2 bg-cozy-green hover:bg-cozy-green/90 text-white font-bold text-sm py-3 px-4 rounded-xl shadow-xs transition active:scale-95 cursor-pointer">
+                        <i class="fa-solid fa-map-location-dot text-base animate-bounce"></i>
+                        Ver Ubicación en Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Progreso -->
+        <div class="bg-white rounded-2xl p-5 border border-brand-200/40 shadow-sm mb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Progreso de regalos</span>
+                <span id="progress-text" class="text-sm font-bold text-brand-600">0% (0 de 0)</span>
+            </div>
+            <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-brand-500 to-cozy-green h-full rounded-full transition-all duration-500 w-0"></div>
+            </div>
+            <div class="flex justify-between text-xs text-gray-500 mt-2">
+                <span>🎁 Disponibles: <strong id="count-available" class="text-gray-700">0</strong></span>
+                <span>✨ Apartados: <strong id="count-claimed" class="text-cozy-green font-semibold">0</strong></span>
+            </div>
+        </div>
+
+        <!-- Filtros y Barra de Control -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-6 justify-between items-stretch sm:items-center">
+            <!-- Pestañas de Filtros -->
+            <div class="flex bg-gray-100 p-1 rounded-xl border border-gray-200/60 max-w-max">
+                <button onclick="setFilter('all')" id="btn-filter-all" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer bg-white text-gray-900 shadow-xs">
+                    Todos
+                </button>
+                <button onclick="setFilter('available')" id="btn-filter-available" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer text-gray-500 hover:text-gray-900">
+                    Libres
+                </button>
+                <button onclick="setFilter('claimed')" id="btn-filter-claimed" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer text-gray-500 hover:text-gray-900">
+                    Apartados
+                </button>
+            </div>
+
+            <!-- Botón para Agregar Regalo Personalizado -->
+            <button onclick="openAddModal()" class="inline-flex items-center justify-center gap-2 bg-cozy-dark hover:bg-cozy-dark/95 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-xs hover:shadow-md cursor-pointer">
+                <i class="fa-solid fa-plus text-cozy-yellow"></i>
+                Agregar otro regalo
+            </button>
+        </div>
+
+        <!-- Contenedor del Buscador -->
+        <div class="relative mb-6">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+            </span>
+            <input type="text" id="search-input" oninput="handleSearch()" placeholder="Buscar un regalo..." class="w-full bg-white border border-gray-200/80 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-xs transition">
+        </div>
+
+        <!-- Lista de Regalos -->
+        <div id="gift-list-empty" class="hidden text-center py-12 px-4 bg-white rounded-2xl border border-gray-100 shadow-xs">
+            <span class="text-4xl">🔍</span>
+            <h3 class="text-gray-700 font-bold mt-3">No encontramos ese regalo</h3>
+            <p class="text-gray-400 text-xs mt-1">Intenta con otra palabra o agrega un regalo nuevo.</p>
+        </div>
+
+        <div id="loading-spinner" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-500 border-t-transparent"></div>
+            <p class="text-gray-400 text-xs mt-2">Cargando mesa de regalos en vivo...</p>
+        </div>
+
+        <div id="gift-list" class="space-y-3 hidden">
+            <!-- Los regalos se generarán dinámicamente aquí -->
+        </div>
+
+        <!-- Botón de acceso privado para los Novios -->
+        <div class="text-center mt-6">
+            <button onclick="toggleAdminMode()" id="btn-admin-mode" class="text-xs text-gray-400 hover:text-brand-600 transition inline-flex items-center gap-1.5 cursor-pointer bg-white/50 px-3.5 py-2 rounded-xl border border-gray-100/40 shadow-2xs hover:shadow-xs">
+                <i class="fa-solid fa-lock text-[10px]"></i>
+                <span>Ver quién apartó (Solo Novios)</span>
+            </button>
+        </div>
+
+        <!-- Confirmación de Asistencia -->
+        <section class="bg-white rounded-2xl p-5 border border-brand-200/40 shadow-sm mt-6">
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Open House</span>
+                    <h3 class="text-xl font-extrabold text-cozy-dark mt-0.5">Confirmar asistencia</h3>
+                    <p class="text-xs text-gray-500 mt-1">Ayúdanos confirmando si vienes para organizarnos mejor.</p>
+                </div>
+                <span class="text-2xl">🎉</span>
+            </div>
+
+            <form id="rsvp-form" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="sm:col-span-2">
+                    <label for="rsvp-name" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Nombre</label>
+                    <input id="rsvp-name" type="text" placeholder="Nombre" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-xs">
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="rsvp-status" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Asistencia</label>
+                    <select id="rsvp-status" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-xs">
+                        <option value="si">Sí, ahí estaré</option>
+                        <option value="talvez">Tal vez</option>
+                        <option value="no">No podré ir</option>
+                    </select>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="rsvp-note" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Mensaje (opcional)</label>
+                    <textarea id="rsvp-note" rows="3" placeholder="Ej. Llego después de las 6 PM" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-xs resize-none"></textarea>
+                </div>
+
+                <p id="rsvp-error-msg" class="sm:col-span-2 hidden text-xs text-red-500 font-semibold"><i class="fa-solid fa-circle-exclamation mr-1"></i> Por favor escribe tu nombre para confirmar.</p>
+
+                <div class="sm:col-span-2 flex items-center justify-between gap-3 flex-wrap">
+                    <p id="rsvp-last-confirmation" class="text-xs text-gray-500">Aún no has confirmado asistencia.</p>
+                    <button type="submit" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-xs hover:shadow-md cursor-pointer">
+                        <i class="fa-solid fa-check"></i>
+                        Guardar confirmación
+                    </button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-cozy-dark text-gray-300 py-8 px-4 mt-12 border-t border-gray-800">
+        <div class="max-w-xl mx-auto text-center space-y-3">
+            <p class="text-sm font-semibold text-cozy-yellow">🏡 ¡Muchísimas gracias por el apoyo, los queremos!</p>
+            <p class="text-xs text-gray-400">Open House 2026. Al apartar un regalo se guarda de forma segura e inmediata.</p>
+        </div>
+    </footer>
+
+    <!-- ================= MODALES PERSONALIZADOS (NO ALERTS, NO CONFIRMS) ================= -->
+    
+    <!-- Modal: Apartar Regalo -->
+    <div id="modal-claim" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="bg-gradient-to-r from-brand-100 to-brand-50 p-6 border-b border-brand-100 relative">
+                <button onclick="closeModal('modal-claim')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <span id="claim-modal-icon" class="text-3xl">🎁</span>
+                    <div>
+                        <h3 class="font-extrabold text-cozy-dark text-lg">Apartar regalo</h3>
+                        <p class="text-xs text-brand-600 font-semibold" id="claim-modal-item-name">Nombre del regalo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-gray-500 leading-relaxed">
+                    Escribe tu nombre (o el de tu pareja/familia) para que todos sepan que este regalo ya tiene dueño. ¡Muchas gracias!
+                </p>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Tu Nombre completo o Apodo</label>
+                    <input type="text" id="claim-user-name" placeholder="Ej. Sofía y Alejandro" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-xs">
+                    <p id="claim-error-msg" class="hidden text-xs text-red-500 font-semibold mt-1.5"><i class="fa-solid fa-circle-exclamation mr-1"></i> Por favor escribe un nombre.</p>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-end gap-2.5">
+                <button onclick="closeModal('modal-claim')" class="bg-white border border-gray-200 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-gray-50 transition cursor-pointer">
+                    Cancelar
+                </button>
+                <button id="btn-confirm-claim" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-xs hover:shadow-md cursor-pointer">
+                    Confirmar y Apartar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Liberar Regalo -->
+    <div id="modal-release" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="p-6 text-center space-y-3">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-50 border border-amber-200 text-amber-500">
+                    <i class="fa-solid fa-circle-info text-2xl"></i>
+                </div>
+                <h3 class="font-extrabold text-cozy-dark text-lg">¿Liberar regalo?</h3>
+                <p class="text-xs text-gray-500 leading-relaxed px-2">
+                    Si te equivocaste de botón o decidiste elegir otra cosa, puedes liberarlo para que otra persona lo pueda apartar.
+                </p>
+                <p id="release-modal-item-name" class="font-bold text-xs bg-gray-100 py-2 rounded-lg text-gray-700">Nombre de regalo</p>
+            </div>
+            <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-end gap-2">
+                <button onclick="closeModal('modal-release')" class="flex-1 bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2.5 rounded-xl hover:bg-gray-50 transition cursor-pointer">
+                    Cancelar
+                </button>
+                <button id="btn-confirm-release" class="flex-1 bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-xs cursor-pointer">
+                    Sí, Liberar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar Regalo Nuevo -->
+    <div id="modal-add" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="bg-gradient-to-r from-cozy-dark to-cozy-dark/90 p-6 text-white relative">
+                <button onclick="closeModal('modal-add')" class="absolute top-4 right-4 text-gray-400 hover:text-white cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">✨</span>
+                    <div>
+                        <h3 class="font-extrabold text-lg">Agregar otro regalo</h3>
+                        <p class="text-xs text-cozy-yellow font-semibold">¿Se nos pasó algo? ¡Agrégalo aquí!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Nombre del Artículo</label>
+                    <input type="text" id="add-gift-name" placeholder="Ej. Cafetera eléctrica, Toallas..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-cozy-dark shadow-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Categoría / Ícono (Emoji)</label>
+                    <div class="grid grid-cols-6 gap-2 bg-gray-50 p-3 rounded-xl border border-gray-100" id="emoji-selector">
+                        <button onclick="selectEmoji('🍳')" class="emoji-btn text-2xl p-1.5 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 transition bg-white border-cozy-dark/20">🍳</button>
+                        <button onclick="selectEmoji('🛋️')" class="emoji-btn text-2xl p-1.5 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 transition">🛋️</button>
+                        <button onclick="selectEmoji('🧹')" class="emoji-btn text-2xl p-1.5 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 transition">🧹</button>
+                        <button onclick="selectEmoji('💡')" class="emoji-btn text-2xl p-1.5 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 transition">💡</button>
+                        <button onclick="selectEmoji('🖼️')" class="emoji-btn text-2xl p-1.5 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 transition">🖼️</button>
+                        <button onclick="selectEmoji('📦')" class="emoji-btn text-2xl p-1.5 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 transition">📦</button>
+                    </div>
+                </div>
+                <p id="add-error-msg" class="hidden text-xs text-red-500 font-semibold"><i class="fa-solid fa-circle-exclamation mr-1"></i> Por favor, escribe un nombre para el regalo.</p>
+            </div>
+            <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-end gap-2.5">
+                <button onclick="closeModal('modal-add')" class="bg-white border border-gray-200 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-gray-50 transition cursor-pointer">
+                    Cancelar
+                </button>
+                <button onclick="submitNewGift()" class="bg-cozy-dark hover:bg-cozy-dark/90 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer">
+                    Añadir Regalo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Notificación -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-12 opacity-0 transition-all duration-300 bg-cozy-dark text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm pointer-events-none">
+        <span id="toast-icon">✨</span>
+        <span id="toast-text">Notificación exitosa!</span>
+    </div>
+
+    <!-- Scripts & Firebase Config -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, collection, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // CONFIGURACIÓN DE FIREBASE (Usa las variables globales inyectadas de manera segura)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'open-house-gift-registry-2026';
+        
+        let firebaseConfig = {
+            apiKey: "mock-api-key",
+            authDomain: "mock-auth-domain",
+            projectId: "mock-project-id",
+            storageBucket: "mock-storage-bucket",
+            messagingSenderId: "mock-sender-id",
+            appId: "mock-app-id"
+        };
+
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+            try {
+                firebaseConfig = JSON.parse(__firebase_config);
+            } catch (e) {
+                console.error("Error al parsear config de Firebase:", e);
+            }
+        }
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Lista original y estructurada de regalos (fuente de verdad)
+        const defaultGifts = [
+            { id: "1", name: "Despensa en general", icon: "🛒", claimed: false, claimedBy: "" },
+            { id: "2", name: "Tazas", icon: "☕", claimed: false, claimedBy: "" },
+            { id: "3", name: "Especieros", icon: "🧂", claimed: false, claimedBy: "" },
+            { id: "4", name: "Plancha", icon: "🔌", claimed: false, claimedBy: "" },
+            { id: "5", name: "Reloj de Pared", icon: "⏰", claimed: false, claimedBy: "" },
+            { id: "6", name: "Sándwichera", icon: "🥪", claimed: false, claimedBy: "" },
+            { id: "7", name: "Juego de sábanas king", icon: "🛏️", claimed: false, claimedBy: "" },
+            { id: "8", name: "Comal", icon: "🍳", claimed: false, claimedBy: "" },
+            { id: "9", name: "Contenedores de almacenamiento para alimentos", icon: "🫙", claimed: false, claimedBy: "" },
+            { id: "10", name: "Saleros", icon: "🧂", claimed: false, claimedBy: "" },
+            { id: "11", name: "Cesto para ropa", icon: "🧺", claimed: false, claimedBy: "" },
+            { id: "12", name: "Pelador y pinzas de cocina", icon: "🔪", claimed: false, claimedBy: "" },
+            { id: "13", name: "Vasitos tequileros", icon: "🥃", claimed: false, claimedBy: "" },
+            { id: "14", name: "Escurridor de trastes (pequeño por espacio)", icon: "🍽️", claimed: false, claimedBy: "" },
+            { id: "15", name: "Dispensador de jabón líquido", icon: "🧼", claimed: false, claimedBy: "" },
+            { id: "16", name: "Tabla para planchar", icon: "👕", claimed: false, claimedBy: "" },
+            { id: "17", name: "Olla", icon: "🍲", claimed: false, claimedBy: "" }
+        ];
+
+        // Estado de la aplicación local
+        let gifts = [];
+        let filterStatus = 'all'; // 'all', 'available', 'claimed'
+        let searchQuery = '';
+        let selectedEmoji = '🍳';
+        let currentClaimingId = null;
+        let currentReleasingId = null;
+        let isAdmin = false;
+
+        // Ayudante para obtener lista de aportadores de manera robusta
+        function getClaimers(gift) {
+            if (!gift.claimedBy) return [];
+            return gift.claimedBy.split(',').map(n => n.trim()).filter(Boolean);
+        }
+
+        // Autenticar antes de hacer queries (REGLA MANDATORIA 3)
+        async function runInitialization() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                // Conectarse a Firestore después de autenticar exitosamente
+                await setupRealtimeListener();
+            } catch (err) {
+                console.error("Error de autenticación Firebase:", err);
+                // Si falla Firebase, usamos localStorage de fallback para que siga siendo usable localmente
+                useLocalStorageFallback();
+            }
+        }
+
+        // Obtener Ruta en Firestore siguiendo REGLA MANDATORIA 1
+        const getCollectionRef = () => {
+            return collection(db, 'artifacts', appId, 'public', 'data', 'gifts');
+        };
+
+        // Escucha en tiempo real (onSnapshot con callback de error)
+        async function setupRealtimeListener() {
+            const collRef = getCollectionRef();
+            
+            onSnapshot(collRef, async (snapshot) => {
+                // Si la colección de regalos está vacía (primera vez), la inicializamos con la lista por defecto
+                if (snapshot.empty) {
+                    document.getElementById('loading-spinner').innerHTML = `
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-500 border-t-transparent"></div>
+                        <p class="text-gray-400 text-xs mt-2">Inicializando lista por primera vez...</p>
+                    `;
+                    
+                    try {
+                        for (const gift of defaultGifts) {
+                            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gifts', gift.id);
+                            await setDoc(docRef, gift);
+                        }
+                    } catch (e) {
+                        console.error("Error inicializando documentos:", e);
+                    }
+                    return; // onSnapshot se volverá a disparar automáticamente al agregarse
+                }
+
+                // Parsear documentos
+                gifts = [];
+                snapshot.forEach(doc => {
+                    gifts.push(doc.data());
+                });
+
+                // Ordenar por ID para que se mantengan estables
+                gifts.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+                // Esconder spinner
+                document.getElementById('loading-spinner').classList.add('hidden');
+                document.getElementById('gift-list').classList.remove('hidden');
+
+                // Renderizar
+                renderGifts();
+                updateStats();
+            }, (error) => {
+                console.error("Error leyendo de Firestore, cambiando a LocalStorage:", error);
+                useLocalStorageFallback();
+            });
+        }
+
+        // Fallback robusto en caso de que Firebase falle
+        function useLocalStorageFallback() {
+            console.log("Cargando base de datos alternativa (Local)...");
+            const localData = localStorage.getItem('openHouseGiftsData');
+            if (localData) {
+                gifts = JSON.parse(localData);
+            } else {
+                gifts = defaultGifts;
+                localStorage.setItem('openHouseGiftsData', JSON.stringify(gifts));
+            }
+
+            document.getElementById('loading-spinner').classList.add('hidden');
+            document.getElementById('gift-list').classList.remove('hidden');
+            renderGifts();
+            updateStats();
+            showToast("⚠️ Modo local (los cambios solo se guardan en tu dispositivo)", "warning");
+        }
+
+        // Guardar cambios cuando estamos en fallback de localStorage
+        function saveLocalFallback() {
+            localStorage.setItem('openHouseGiftsData', JSON.stringify(gifts));
+            renderGifts();
+            updateStats();
+        }
+
+        // Renderizar Elementos de la lista
+        function renderGifts() {
+            const listContainer = document.getElementById('gift-list');
+            listContainer.innerHTML = '';
+
+            // Filtrar regalos
+            let filteredGifts = gifts.filter(gift => {
+                // Filtro por buscador
+                const matchesSearch = gift.name.toLowerCase().includes(searchQuery.toLowerCase());
+                
+                // Filtro por estatus
+                if (filterStatus === 'available') {
+                    // Despensa en general (id 1) siempre se muestra disponible para sumar aportaciones
+                    return matchesSearch && (!gift.claimed || gift.id === "1");
+                } else if (filterStatus === 'claimed') {
+                    const claimers = gift.id === "1" ? getClaimers(gift) : [];
+                    return matchesSearch && (gift.claimed || (gift.id === "1" && claimers.length > 0));
+                }
+                return matchesSearch;
+            });
+
+            if (filteredGifts.length === 0) {
+                document.getElementById('gift-list-empty').classList.remove('hidden');
+            } else {
+                document.getElementById('gift-list-empty').classList.add('hidden');
+            }
+
+            filteredGifts.forEach(gift => {
+                const isMulti = gift.id === "1";
+                const isClaimed = gift.claimed;
+                
+                // Determinar si el usuario actual ya aportó (usado para la despensa multi-aportación)
+                const claimers = getClaimers(gift);
+                const mySavedName = sessionStorage.getItem('userName') || "";
+                const userHasContributed = mySavedName && claimers.some(c => c.toLowerCase() === mySavedName.toLowerCase());
+
+                const card = document.createElement('div');
+                card.className = `flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${
+                    isClaimed && !isMulti
+                        ? 'bg-gray-50 border-gray-100 opacity-75' 
+                        : 'bg-white border-brand-100/40 hover:border-brand-200 hover:shadow-xs'
+                }`;
+
+                // Texto del estado del regalo (Privacidad aplicada)
+                let statusHtml = '';
+                if (isMulti) {
+                    const contributions = claimers.length;
+                    const showNames = isAdmin && contributions > 0 ? ` (por: ${claimers.join(', ')})` : '';
+                    if (contributions > 0) {
+                        statusHtml = `<p class="text-xs text-brand-600 font-bold mt-0.5">🙌 ¡Disponible! (${contributions} aportación${contributions > 1 ? 'es' : ''})${showNames}</p>`;
+                    } else {
+                        statusHtml = '<p class="text-xs text-amber-500 font-bold mt-0.5">🙌 ¡Disponible para varios!</p>';
+                    }
+                } else {
+                    if (isClaimed) {
+                        const showName = isAdmin ? ` (por: ${gift.claimedBy})` : '';
+                        statusHtml = `<p class="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-0.5"><i class="fa-solid fa-circle-check text-[10px]"></i> ¡Ya reservado!${showName}</p>`;
+                    } else {
+                        statusHtml = '<p class="text-xs text-amber-500 font-bold mt-0.5">🙌 ¡Disponible!</p>';
+                    }
+                }
+
+                // Botones de acción
+                let actionHtml = '';
+                if (isMulti) {
+                    // Para despensa en general, siempre mostramos "Anotarse".
+                    // Si el usuario actual ya aportó o es admin, también habilitamos el botón para retirar su aportación.
+                    const canRelease = userHasContributed || isAdmin;
+                    actionHtml = `
+                        <div class="flex items-center gap-1.5">
+                            ${canRelease 
+                                ? `<button onclick="openReleaseModal('${gift.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold px-2.5 py-2 rounded-xl hover:bg-red-50 transition cursor-pointer">Retirar</button>` 
+                                : ''
+                            }
+                            <button onclick="openClaimModal('${gift.id}')" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer">Anotarme</button>
+                        </div>
+                    `;
+                } else {
+                    actionHtml = isClaimed 
+                        ? `<button onclick="openReleaseModal('${gift.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold px-3 py-2 rounded-xl hover:bg-red-50 transition cursor-pointer">Liberar</button>`
+                        : `<button onclick="openClaimModal('${gift.id}')" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer">Apartar</button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3.5 pr-2 flex-1 min-w-0">
+                        <span class="text-3xl flex-shrink-0 bg-gray-50 p-1.5 rounded-xl border border-gray-100">${gift.icon}</span>
+                        <div class="truncate">
+                            <p class="font-bold text-cozy-dark ${isClaimed && !isMulti ? 'line-through text-gray-400' : ''} truncate">${gift.name}</p>
+                            ${statusHtml}
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        ${actionHtml}
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        // Actualizar estadísticas del panel
+        function updateStats() {
+            const total = gifts.length;
+            const claimed = gifts.filter(g => g.claimed || (g.id === "1" && getClaimers(g).length > 0)).length;
+            const available = total - gifts.filter(g => g.claimed).length;
+            const percentage = total > 0 ? Math.round((claimed / total) * 100) : 0;
+
+            document.getElementById('progress-text').innerText = `${percentage}% (${claimed} de ${total})`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('count-available').innerText = available;
+            document.getElementById('count-claimed').innerText = claimed;
+        }
+
+        // Filtros de categoría
+        window.setFilter = function(status) {
+            filterStatus = status;
+            
+            // Actualizar estilo de botones
+            ['all', 'available', 'claimed'].forEach(s => {
+                const btn = document.getElementById(`btn-filter-${s}`);
+                if (s === status) {
+                    btn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer bg-white text-gray-900 shadow-xs";
+                } else {
+                    btn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer text-gray-500 hover:text-gray-900";
+                }
+            });
+
+            renderGifts();
+        };
+
+        // Buscador de regalos
+        window.handleSearch = function() {
+            searchQuery = document.getElementById('search-input').value;
+            renderGifts();
+        };
+
+        // Control de Apertura de Modales
+        window.openClaimModal = function(id) {
+            const gift = gifts.find(g => g.id === id);
+            if (!gift) return;
+
+            currentClaimingId = id;
+            document.getElementById('claim-modal-item-name').innerText = gift.name;
+            document.getElementById('claim-modal-icon').innerText = gift.icon;
+            document.getElementById('claim-user-name').value = sessionStorage.getItem('userName') || '';
+            document.getElementById('claim-error-msg').classList.add('hidden');
+
+            const modal = document.getElementById('modal-claim');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        };
+
+        window.openReleaseModal = function(id) {
+            const gift = gifts.find(g => g.id === id);
+            if (!gift) return;
+
+            currentReleasingId = id;
+            document.getElementById('release-modal-item-name').innerText = `${gift.icon} ${gift.name}`;
+
+            const modal = document.getElementById('modal-release');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        };
+
+        window.openAddModal = function() {
+            document.getElementById('add-gift-name').value = '';
+            document.getElementById('add-error-msg').classList.add('hidden');
+            
+            // Emoji por defecto
+            selectEmoji('🍳');
+
+            const modal = document.getElementById('modal-add');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        };
+
+        window.closeModal = function(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        };
+
+        // Enviar Acción: Apartar Regalo
+        document.getElementById('btn-confirm-claim').addEventListener('click', async () => {
+            const nameInput = document.getElementById('claim-user-name').value.trim();
+            if (!nameInput) {
+                document.getElementById('claim-error-msg').classList.remove('hidden');
+                return;
+            }
+
+            // Guardar nombre localmente para agilizar próximos apartados
+            sessionStorage.setItem('userName', nameInput);
+
+            const giftId = currentClaimingId;
+            closeModal('modal-claim');
+
+            const gift = gifts.find(g => g.id === giftId);
+            if (!gift) return;
+
+            let updatedClaimedBy = nameInput;
+            let updatedClaimed = true;
+
+            if (giftId === "1") {
+                // Multi-claim item (Despensa en general)
+                const claimers = getClaimers(gift);
+                if (!claimers.map(c => c.toLowerCase()).includes(nameInput.toLowerCase())) {
+                    claimers.push(nameInput);
+                }
+                updatedClaimedBy = claimers.join(', ');
+                updatedClaimed = false; // Se mantiene false para seguir disponible
+            }
+
+            const isFirebaseActive = auth.currentUser !== null;
+            if (isFirebaseActive) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gifts', giftId);
+                    await updateDoc(docRef, {
+                        claimed: updatedClaimed,
+                        claimedBy: updatedClaimedBy
+                    });
+                    showToast(`🎉 ¡Listo! Te registraste para "${gift.name}"`, 'success');
+                } catch (e) {
+                    console.error("Error al apartar:", e);
+                    showToast("No se pudo conectar a la base de datos", "error");
+                }
+            } else {
+                const giftIdx = gifts.findIndex(g => g.id === giftId);
+                if (giftIdx !== -1) {
+                    gifts[giftIdx].claimed = updatedClaimed;
+                    gifts[giftIdx].claimedBy = updatedClaimedBy;
+                    saveLocalFallback();
+                    showToast(`🎉 ¡Listo! Te registraste para "${gifts[giftIdx].name}"`, 'success');
+                }
+            }
+        });
+
+        // Enviar Acción: Liberar Regalo
+        document.getElementById('btn-confirm-release').addEventListener('click', async () => {
+            const giftId = currentReleasingId;
+            closeModal('modal-release');
+
+            const gift = gifts.find(g => g.id === giftId);
+            if (!gift) return;
+
+            let updatedClaimedBy = "";
+            let updatedClaimed = false;
+
+            if (giftId === "1") {
+                // Multi-claim item (Despensa en general)
+                const claimers = getClaimers(gift);
+                const myName = sessionStorage.getItem('userName') || "";
+                
+                let nameToRemove = myName;
+                if (isAdmin && !claimers.includes(myName)) {
+                    // Si el administrador desea retirar, le pregunta a quién
+                    const inputName = prompt("Ingresa el nombre de la persona que deseas retirar de la lista:\nNombres actuales: " + claimers.join(', '));
+                    if (inputName) {
+                        nameToRemove = inputName.trim();
+                    } else {
+                        return; // Cancelar
+                    }
+                } else if (!myName) {
+                    const inputName = prompt("Ingresa el nombre con el que apartaste la despensa para liberarlo:");
+                    if (inputName) {
+                        nameToRemove = inputName.trim();
+                    } else {
+                        return; // Cancelar
+                    }
+                }
+
+                const newClaimers = claimers.filter(c => c.toLowerCase() !== nameToRemove.toLowerCase());
+                updatedClaimedBy = newClaimers.join(', ');
+                updatedClaimed = false;
+                
+                showToast(`🧹 Se retiró la aportación de "${nameToRemove}"`, "info");
+            } else {
+                // Objeto normal
+                updatedClaimedBy = "";
+                updatedClaimed = false;
+                showToast("🧹 El regalo ha sido liberado", "info");
+            }
+
+            const isFirebaseActive = auth.currentUser !== null;
+            if (isFirebaseActive) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gifts', giftId);
+                    await updateDoc(docRef, {
+                        claimed: updatedClaimed,
+                        claimedBy: updatedClaimedBy
+                    });
+                } catch (e) {
+                    console.error("Error al liberar:", e);
+                    showToast("Error de conexión", "error");
+                }
+            } else {
+                const giftIdx = gifts.findIndex(g => g.id === giftId);
+                if (giftIdx !== -1) {
+                    gifts[giftIdx].claimed = updatedClaimed;
+                    gifts[giftIdx].claimedBy = updatedClaimedBy;
+                    saveLocalFallback();
+                }
+            }
+        });
+
+        // Selección de emoji para regalos nuevos
+        window.selectEmoji = function(emoji) {
+            selectedEmoji = emoji;
+            const buttons = document.querySelectorAll('.emoji-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText === emoji) {
+                    btn.className = "emoji-btn text-2xl p-1.5 rounded-lg border bg-white border-cozy-dark/20 transition";
+                } else {
+                    btn.className = "emoji-btn text-2xl p-1.5 rounded-lg border border-transparent hover:bg-white hover:border-gray-200 transition";
+                }
+            });
+        };
+
+        // Enviar Acción: Agregar Regalo Nuevo
+        window.submitNewGift = async function() {
+            const nameInput = document.getElementById('add-gift-name').value.trim();
+            if (!nameInput) {
+                document.getElementById('add-error-msg').classList.remove('hidden');
+                return;
+            }
+
+            closeModal('modal-add');
+
+            // Generar un ID único simple basado en el timestamp
+            const newId = Date.now().toString();
+            const newGift = {
+                id: newId,
+                name: nameInput,
+                icon: selectedEmoji,
+                claimed: false,
+                claimedBy: ""
+            };
+
+            const isFirebaseActive = auth.currentUser !== null;
+            if (isFirebaseActive) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gifts', newId);
+                    await setDoc(docRef, newGift);
+                    showToast(`✨ Se agregó "${nameInput}" a la lista`, "success");
+                } catch (e) {
+                    console.error("Error al agregar:", e);
+                    showToast("No se pudo agregar a la base de datos", "error");
+                }
+            } else {
+                gifts.push(newGift);
+                saveLocalFallback();
+                showToast(`✨ Se agregó "${nameInput}" a la lista`, "success");
+            }
+        };
+
+        // Sistema de notificaciones (Toast)
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastText.innerText = message;
+            
+            // Iconos personalizados por tipo de alerta
+            if (type === 'success') {
+                toastIcon.innerHTML = '❤️';
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 bg-emerald-600 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm";
+            } else if (type === 'warning') {
+                toastIcon.innerHTML = '⚠️';
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 bg-amber-500 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm";
+            } else if (type === 'info') {
+                toastIcon.innerHTML = '💡';
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 bg-cozy-dark text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm";
+            } else {
+                toastIcon.innerHTML = '❌';
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 transition-all duration-300 bg-red-600 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm";
+            }
+
+            // Ocultar después de 4 segundos
+            setTimeout(() => {
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-12 opacity-0 transition-all duration-300 bg-cozy-dark text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm pointer-events-none";
+            }, 4000);
+        }
+
+        function updateRsvpSummary(data) {
+            const summary = document.getElementById('rsvp-last-confirmation');
+            if (!summary || !data) return;
+
+            const statusMap = {
+                si: 'Sí asiste',
+                talvez: 'Tal vez',
+                no: 'No asiste'
+            };
+            const statusText = statusMap[data.status] || 'Sin definir';
+            summary.innerText = `Ultima confirmacion: ${data.name} · ${statusText}`;
+        }
+
+        function initializeRsvpSection() {
+            const form = document.getElementById('rsvp-form');
+            if (!form) return;
+
+            const nameInput = document.getElementById('rsvp-name');
+            const statusInput = document.getElementById('rsvp-status');
+            const noteInput = document.getElementById('rsvp-note');
+            const errorMsg = document.getElementById('rsvp-error-msg');
+
+            const saved = localStorage.getItem('openHouseRsvp');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    statusInput.value = parsed.status || 'si';
+                    noteInput.value = parsed.note || '';
+                } catch (e) {
+                    console.error('No se pudo cargar RSVP previo:', e);
+                }
+            }
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const name = nameInput.value.trim();
+                if (!name) {
+                    errorMsg.classList.remove('hidden');
+                    return;
+                }
+
+                errorMsg.classList.add('hidden');
+                const rsvpData = {
+                    name,
+                    status: statusInput.value,
+                    note: noteInput.value.trim(),
+                    updatedAt: Date.now()
+                };
+
+                localStorage.setItem('openHouseRsvp', JSON.stringify(rsvpData));
+                updateRsvpSummary(rsvpData);
+                showToast('✅ Asistencia confirmada. ¡Gracias!', 'success');
+            });
+        }
+
+        // Modo Novios / Admin para ver quién apartó cada regalo de forma privada
+        window.toggleAdminMode = function() {
+            if (isAdmin) {
+                isAdmin = false;
+                document.getElementById('btn-admin-mode').innerHTML = `
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                    <span>Ver quién apartó (Solo Novios)</span>
+                `;
+                showToast("🔒 Nombres ocultados de la vista pública", "info");
+                renderGifts();
+            } else {
+                const pin = prompt("Ingresa el PIN de acceso para los novios:");
+                if (pin === "2026") {
+                    isAdmin = true;
+                    document.getElementById('btn-admin-mode').innerHTML = `
+                        <i class="fa-solid fa-lock-open text-[10px] text-emerald-600"></i>
+                        <span class="text-emerald-700 font-bold">Ver quién apartó (Modo Novios)</span>
+                    `;
+                    showToast("🔓 Modo Novios activo. Ahora puedes ver quién reservó cada regalo.", "success");
+                    renderGifts();
+                } else if (pin !== null) {
+                    showToast("❌ Código PIN incorrecto", "error");
+                }
+            }
+        };
+
+        // Compartir liga de la mesa
+        window.shareRegistry = function() {
+            // Mensaje prediseñado para mandar por WhatsApp
+            const shareText = `¡Hola amigos! 🏡✨ Les dejamos nuestra lista interactiva para que puedan ver lo que nos hace falta para el departamento y apartar su regalo en tiempo real. ¡Nos vemos pronto! 👇\n${window.location.href}`;
+            
+            // Copiar al portapapeles usando el método seguro recomendado
+            const tempInput = document.createElement("textarea");
+            tempInput.value = shareText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast("📋 ¡Mensaje e invitación copiados al portapapeles! Listos para WhatsApp.", "success");
+            } catch (err) {
+                console.error("Fallo al copiar enlace", err);
+                showToast("Por favor copia el link de tu navegador", "error");
+            }
+            
+            document.body.removeChild(tempInput);
+        };
+
+        // Iniciar flujo al cargar la pantalla
+        window.onload = function() {
+            runInitialization();
+            initializeRsvpSection();
+        }
+    </script>
+</body>
+</html>
