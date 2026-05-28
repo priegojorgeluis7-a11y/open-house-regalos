@@ -499,8 +499,17 @@
                 renderGifts();
                 updateStats();
             }, (error) => {
-                console.error("Error leyendo de Firestore, cambiando a LocalStorage:", error);
-                useLocalStorageFallback();
+                console.error("Error leyendo de Firestore:", error);
+
+                const fatalCodes = ['permission-denied', 'unauthenticated', 'failed-precondition'];
+                if (fatalCodes.includes(error.code)) {
+                    console.error("Error fatal en Firestore, cambiando a LocalStorage:", error);
+                    useLocalStorageFallback();
+                    return;
+                }
+
+                // En errores transitorios de red, dejamos que Firestore reintente sin caer a modo local.
+                showToast("Reconectando con la base de datos...", "info");
             });
         }
 
