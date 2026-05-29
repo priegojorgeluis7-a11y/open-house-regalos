@@ -1,9 +1,50 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Permite acceso a usuarios autenticados (incluye login anonimo).
-    match /{document=**} {
+    match /artifacts/{appId}/public/data/gifts/{giftId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.id == giftId
+        && request.resource.data.keys().hasOnly(['id', 'name', 'icon', 'claimed', 'claimedBy', 'claimedByUid']);
+
+      allow update: if request.auth != null
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.icon == resource.data.icon
+        && request.resource.data.keys().hasOnly(['id', 'name', 'icon', 'claimed', 'claimedBy', 'claimedByUid'])
+        && (
+          // Apartar un regalo normal: queda vinculado al uid que lo aparto.
+          (giftId != '1'
+            && request.resource.data.claimed == true
+            && request.resource.data.claimedBy is string
+            && request.resource.data.claimedBy.size() > 0
+            && request.resource.data.claimedByUid == request.auth.uid)
+
+          // Liberar un regalo normal: solo quien lo aparto puede liberarlo.
+          || (giftId != '1'
+            && resource.data.claimedByUid == request.auth.uid
+            && request.resource.data.claimed == false
+            && request.resource.data.claimedBy == ''
+            && request.resource.data.claimedByUid == '')
+
+          // Despensa general (id 1): se conserva como multi-aportacion.
+          || (giftId == '1'
+            && request.resource.data.claimed == false
+            && request.resource.data.claimedBy is string
+            && request.resource.data.claimedByUid == '')
+        );
+
+      allow delete: if false;
+    }
+
+    match /artifacts/{appId}/public/data/rsvp/{rsvpId} {
       allow read, write: if request.auth != null;
+    }
+
+    // Denegar cualquier ruta no contemplada.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

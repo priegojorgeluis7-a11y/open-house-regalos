@@ -423,23 +423,23 @@
 
         // Lista original y estructurada de regalos (fuente de verdad)
         const defaultGifts = [
-            { id: "1", name: "Despensa en general", icon: "🛒", claimed: false, claimedBy: "" },
-            { id: "2", name: "Tazas", icon: "☕", claimed: false, claimedBy: "" },
-            { id: "3", name: "Especieros", icon: "🧂", claimed: false, claimedBy: "" },
-            { id: "4", name: "Plancha", icon: "🔌", claimed: false, claimedBy: "" },
-            { id: "5", name: "Reloj de Pared", icon: "⏰", claimed: false, claimedBy: "" },
-            { id: "6", name: "Sándwichera", icon: "🥪", claimed: false, claimedBy: "" },
-            { id: "7", name: "Juego de sábanas king", icon: "🛏️", claimed: false, claimedBy: "" },
-            { id: "8", name: "Comal", icon: "🍳", claimed: false, claimedBy: "" },
-            { id: "9", name: "Contenedores de almacenamiento para alimentos", icon: "🫙", claimed: false, claimedBy: "" },
-            { id: "10", name: "Saleros", icon: "🧂", claimed: false, claimedBy: "" },
-            { id: "11", name: "Cesto para ropa", icon: "🧺", claimed: false, claimedBy: "" },
-            { id: "12", name: "Pelador y pinzas de cocina", icon: "🔪", claimed: false, claimedBy: "" },
-            { id: "13", name: "Vasitos tequileros", icon: "🥃", claimed: false, claimedBy: "" },
-            { id: "14", name: "Escurridor de trastes (pequeño por espacio)", icon: "🍽️", claimed: false, claimedBy: "" },
-            { id: "15", name: "Dispensador de jabón líquido", icon: "🧼", claimed: false, claimedBy: "" },
-            { id: "16", name: "Tabla para planchar", icon: "👕", claimed: false, claimedBy: "" },
-            { id: "17", name: "Olla", icon: "🍲", claimed: false, claimedBy: "" }
+            { id: "1", name: "Despensa en general", icon: "🛒", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "2", name: "Tazas", icon: "☕", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "3", name: "Especieros", icon: "🧂", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "4", name: "Plancha", icon: "🔌", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "5", name: "Reloj de Pared", icon: "⏰", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "6", name: "Sándwichera", icon: "🥪", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "7", name: "Juego de sábanas king", icon: "🛏️", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "8", name: "Comal", icon: "🍳", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "9", name: "Contenedores de almacenamiento para alimentos", icon: "🫙", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "10", name: "Saleros", icon: "🧂", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "11", name: "Cesto para ropa", icon: "🧺", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "12", name: "Pelador y pinzas de cocina", icon: "🔪", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "13", name: "Vasitos tequileros", icon: "🥃", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "14", name: "Escurridor de trastes (pequeño por espacio)", icon: "🍽️", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "15", name: "Dispensador de jabón líquido", icon: "🧼", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "16", name: "Tabla para planchar", icon: "👕", claimed: false, claimedBy: "", claimedByUid: "" },
+            { id: "17", name: "Olla", icon: "🍲", claimed: false, claimedBy: "", claimedByUid: "" }
         ];
 
         // Estado de la aplicación local
@@ -455,6 +455,27 @@
         function getClaimers(gift) {
             if (!gift.claimedBy) return [];
             return gift.claimedBy.split(',').map(n => n.trim()).filter(Boolean);
+        }
+
+        function normalizeName(name) {
+            return (name || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        }
+
+        function canCurrentUserReleaseGift(gift) {
+            if (!gift || !gift.claimed || gift.id === "1") return false;
+
+            const currentUid = auth.currentUser?.uid || '';
+            if (gift.claimedByUid && currentUid) {
+                return gift.claimedByUid === currentUid;
+            }
+
+            const mySavedName = sessionStorage.getItem('userName') || '';
+            if (!mySavedName || !gift.claimedBy) return false;
+            return normalizeName(mySavedName) === normalizeName(gift.claimedBy);
         }
 
         // Autenticar antes de hacer queries (REGLA MANDATORIA 3)
@@ -754,9 +775,14 @@
                         </div>
                     `;
                 } else {
-                    actionHtml = isClaimed 
-                        ? `<button onclick="openReleaseModal('${gift.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold px-3 py-2 rounded-xl hover:bg-red-50 transition cursor-pointer">Liberar</button>`
-                        : `<button onclick="openClaimModal('${gift.id}')" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer">Apartar</button>`;
+                    if (isClaimed) {
+                        const canRelease = canCurrentUserReleaseGift(gift);
+                        actionHtml = canRelease
+                            ? `<button onclick="openReleaseModal('${gift.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold px-3 py-2 rounded-xl hover:bg-red-50 transition cursor-pointer">Liberar</button>`
+                            : `<span class="text-xs text-gray-400 font-bold px-3 py-2">Apartado</span>`;
+                    } else {
+                        actionHtml = `<button onclick="openClaimModal('${gift.id}')" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer">Apartar</button>`;
+                    }
                 }
 
                 card.innerHTML = `
@@ -834,6 +860,11 @@
             const gift = gifts.find(g => g.id === id);
             if (!gift) return;
 
+            if (gift.id !== "1" && !canCurrentUserReleaseGift(gift)) {
+                showToast("Solo quien apartó este regalo puede liberarlo.", "error");
+                return;
+            }
+
             currentReleasingId = id;
             document.getElementById('release-modal-item-name').innerText = `${gift.icon} ${gift.name}`;
 
@@ -885,9 +916,14 @@
 
             const gift = gifts.find(g => g.id === giftId);
             if (!gift) return;
+            if (gift.claimed && giftId !== "1") {
+                showToast("Este regalo ya fue apartado por alguien más.", "warning");
+                return;
+            }
 
             let updatedClaimedBy = nameInput;
             let updatedClaimed = true;
+            let updatedClaimedByUid = auth.currentUser?.uid || "";
 
             if (giftId === "1") {
                 // Multi-claim item (Despensa en general)
@@ -897,6 +933,7 @@
                 }
                 updatedClaimedBy = claimers.join(', ');
                 updatedClaimed = false; // Se mantiene false para seguir disponible
+                updatedClaimedByUid = "";
             }
 
             const isFirebaseActive = auth.currentUser !== null;
@@ -905,7 +942,8 @@
                     const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gifts', giftId);
                     await updateDoc(docRef, {
                         claimed: updatedClaimed,
-                        claimedBy: updatedClaimedBy
+                        claimedBy: updatedClaimedBy,
+                        claimedByUid: updatedClaimedByUid
                     });
                     showToast(`🎉 ¡Listo! Te registraste para "${gift.name}"`, 'success');
                 } catch (e) {
@@ -917,6 +955,7 @@
                 if (giftIdx !== -1) {
                     gifts[giftIdx].claimed = updatedClaimed;
                     gifts[giftIdx].claimedBy = updatedClaimedBy;
+                    gifts[giftIdx].claimedByUid = updatedClaimedByUid;
                     saveLocalFallback();
                     showToast(`🎉 ¡Listo! Te registraste para "${gifts[giftIdx].name}"`, 'success');
                 }
@@ -933,6 +972,7 @@
 
             let updatedClaimedBy = "";
             let updatedClaimed = false;
+            let updatedClaimedByUid = "";
 
             if (giftId === "1") {
                 // Multi-claim item (Despensa en general)
@@ -956,6 +996,10 @@
                 showToast(`🧹 Se retiró la aportación de "${nameToRemove}"`, "info");
             } else {
                 // Objeto normal
+                if (!canCurrentUserReleaseGift(gift)) {
+                    showToast("Solo quien apartó este regalo puede liberarlo.", "error");
+                    return;
+                }
                 updatedClaimedBy = "";
                 updatedClaimed = false;
                 showToast("🧹 El regalo ha sido liberado", "info");
@@ -967,7 +1011,8 @@
                     const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gifts', giftId);
                     await updateDoc(docRef, {
                         claimed: updatedClaimed,
-                        claimedBy: updatedClaimedBy
+                        claimedBy: updatedClaimedBy,
+                        claimedByUid: updatedClaimedByUid
                     });
                 } catch (e) {
                     console.error("Error al liberar:", e);
@@ -978,6 +1023,7 @@
                 if (giftIdx !== -1) {
                     gifts[giftIdx].claimed = updatedClaimed;
                     gifts[giftIdx].claimedBy = updatedClaimedBy;
+                    gifts[giftIdx].claimedByUid = updatedClaimedByUid;
                     saveLocalFallback();
                 }
             }
@@ -1013,7 +1059,8 @@
                 name: nameInput,
                 icon: selectedEmoji,
                 claimed: false,
-                claimedBy: ""
+                claimedBy: "",
+                claimedByUid: ""
             };
 
             const isFirebaseActive = auth.currentUser !== null;
